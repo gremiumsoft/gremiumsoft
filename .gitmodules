@@ -1,0 +1,12 @@
+[submodule "frontend-ui"]
+	path = frontend-ui
+	url = https://github.com/gremiumsoft/frontend-ui
+[submodule "go/src/frontend"]
+	path = go/src/frontend
+	url = https://github.com/gremiumsoft/frontend
+[submodule "go/src/quizservice"]
+	path = go/src/quizservice
+	url = https://github.com/gremiumsoft/quizservice
+[submodule "go/src/api-models-go"]
+	path = go/src/api-models-go
+	url = https://github.com/gremiumsoft/api-models-go
