@@ -2,6 +2,21 @@
 
 set -ex
 
+wait_for_istio_init() {
+  while true; do
+    N=$(kubectl get crds | grep -c 'istio.io\|certmanager.k8s.io')
+
+    if [[ N -eq 53 ]];
+    then
+      echo "All services are up"
+      break
+    else
+      echo "Still waiting ${N} active so far"
+      sleep 2
+    fi
+  done
+}
+
 minikube start --memory=8192 --cpus=4 --kubernetes-version=v1.14.2 -p gremium
 minikube profile gremium
 
@@ -20,7 +35,8 @@ fi
 kubectl create namespace istio-system
 
 helm template install/kubernetes/helm/istio-init --name istio-init --namespace istio-system | kubectl apply -f -
-sleep 120  # completely random number
+wait_for_istio_init
+
 # TODO(JN): disable prometheus
 helm template install/kubernetes/helm/istio --name istio --namespace istio-system | kubectl apply -f -
 sleep 120
@@ -39,10 +55,10 @@ COMPONENTS=(
 
 source source.sh
 
-for component in ${COMPONENTS[@]};
+for component in "${COMPONENTS[@]}";
 do
 (
-  cd ${component}
+  cd "${component}"
   make docker-build
   make kube-apply
 )
